@@ -16,6 +16,7 @@ from models import db_setup, Venue, Show, Artist
 from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import aliased
+
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -135,44 +136,40 @@ def show_venue(venue_id):
 def create_venue_form():
   form = VenueForm()
   return render_template('forms/new_venue.html', form=form)
-
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
-  # TODO: insert form data as a new Venue record in the db, instead
-  # TODO: modify data to be the data object returned from db insertion
-  
-  # form = VenueForm(request.form)
-  # if form.validate():
-  try:
-    # seeking_talent = False
-    # seeking_description = ''
-    # if 'seeking_talent' in request.form:
-    #   seeking_talent = request.form['seeking_talent'] == 'y'
-    # if 'seeking_description' in request.form:
-    #   seeking_description = request.form['seeking_description']
-    new_venue = Venue(
-      name=request.form['name'],
-      genres=request.form.getlist('genres'),
-      address=request.form['address'],
-      city=request.form['city'],
-      state=request.form['state'],
-      phone=request.form['phone'],
-      website=request.form['website'],
-      facebook_link=request.form['facebook_link'],
-      image_link=request.form['image_link'],
-      seeking_talent=request.form['seeking_talent'],
-      description=request.form['seeking_description'],
-    )
-    #insert new venue records into the db
-    Venue.insert(new_venue)
-    # on successful db insert, flash success
-    flash('Venue ' + request.form['name'] + ' was successfully listed!')
-  except SQLAlchemyError as e:
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-    # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
-    flash('An error occurred. Venue ' + request.form['name'] + ' could not be listed.')
-  return render_template('pages/home.html')
+    # TODO: insert form data as a new Venue record in the db, instead
+    # TODO: modify data to be the data object returned from db insertion
+    try:
+        seeking_talent = False
+        seeking_description = ''
+        if 'seeking_talent' in request.form:
+            seeking_talent = request.form['seeking_talent'] == 'y'
+        if 'seeking_description' in request.form:
+            seeking_description = request.form['seeking_description']
+        new_venue = Venue(
+            name=request.form['name'],
+            genres=request.form.getlist('genres'),
+            address=request.form['address'],
+            city=request.form['city'],
+            state=request.form['state'],
+            phone=request.form['phone'],
+            website=request.form['website'],
+            facebook_link=request.form['facebook_link'],
+            image_link=request.form['image_link'],
+            seeking_talent=seeking_talent,
+            description=seeking_description,
+        )
+        #db.session.add(new_venue)
+        #db.session.commit()
+
+        Venue.insert(new_venue)
+        flash('Venue ' + request.form['name'] + ' was successfully listed!')
+    except SQLAlchemyError as e:
+        print(e)  # logging
+        flash('An error occurred. Venue ' + request.form['name'] + ' could not be listed.')
+    
+    return render_template('pages/home.html')
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
@@ -460,9 +457,9 @@ if not app.debug:
 # if __name__ == '__main__':
 #     app.run()
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0')
-
+if __name__=="__main__":
+    app.run(debug=True)
+    
 # Or specify port manually:
 '''
 if __name__ == '__main__':

@@ -45,6 +45,7 @@ class Venue(db.Model):
         self.facebook_link = facebook_link
         self.website = website
         self.description = description
+        self.seeking_talent=seeking_talent
 
     def insert(self):
         db.session.add(self)
@@ -124,6 +125,7 @@ class Artist(db.Model):
         self.facebook_link = facebook_link
         self.seeking_description = seeking_description
         self.image_link = image_link
+        self.seeking_venue=seeking_venue
     
     def insert(self):
         db.session.add(self)
